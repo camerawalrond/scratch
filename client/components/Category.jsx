@@ -18,11 +18,14 @@ const Category = (props) => {
         fetch(`/api/resources/${props.id}`)
             .then(response => response.json())
             //we will update our resources value stored in this.state
-            .then(data => setResources(data))
+            .then((data) => {
+                // console.log(data);
+                setResources(data);
+            })
             .catch(err => console.log(err));
     }; 
 
-
+    console.log(resources);
     const updatedResources = resources.map(resource => {
         return <Resource id={resource.resourceid} link={resource.link} key={`${resource.resourceid}${props.id}`} sumdownvote={resource.sumdownvote} sumupvote={resource.sumupvote} score={resource.score} />;
     });
