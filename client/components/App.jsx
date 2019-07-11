@@ -33,10 +33,12 @@ const App = () => {
   //we will create a react component for each element in the categories array
   const categoryComponents = categories.map(category => {
     return <Category key={`catid_${category.categoryid}`} categoryName={category.category} id={category.categoryid} />
-  })
-//--------------------------------------------------------------------------------------------------
+  });
+
+
+  //--------------------------------------------------------------------------------------------------
 /* we pull out keys (categoryid  and category) from each category in the array and pass them as props to each newly made Category component 
-*/ 
+*/
 //--------------------------------------------------------------------------------------------------
   // const categoryIDs = [];
   // const categoryLabels = [];

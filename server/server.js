@@ -11,6 +11,7 @@ const {
   submitVote,
   submitResource,
   getTopThree,
+  insertEmailInDB,
   submitEmail,
   sendEmail
 } = require('./dbController.js');
@@ -54,9 +55,10 @@ app.get('/api/topThree/:id', getTopThree);
 
 // create a route for the callbackURL
 // this is the response from the GitHub OAuth server after client requests to use GitHub for Oauth
-app.get('/api/login', getoAuthCode, getAccessToken, getAPI, jwtCookie);
+app.get('/api/login', getoAuthCode, getAccessToken, getAPI, insertEmailInDB, jwtCookie);
 
 app.get('/api/fakeData', fakeData);
+// app.get('/api/favorites', 'push resource into array');
 
 app.get('/api/newsEmail/:email', submitEmail, sendEmail);
 

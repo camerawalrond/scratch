@@ -1,8 +1,5 @@
 const faker = require('faker');
 // const pg = require('pg');
-//--------------------------------------------------------------------------------------------------
-/*  The client is a bathtub. A pool is a pool. Only one client */ 
-//--------------------------------------------------------------------------------------------------
 const client = require('./database.js');
 // const conString = require('./server_settings/elephantLogin.js');
 
@@ -101,7 +98,7 @@ const dbController = {
     }
   },
 
-  // 🔥🔥🔥🔥 GET TOP THREE FUNCTION HERE TO PULL TOP THREE FROM DB AND SEND IT TO ENDPOINT
+  // 🔥🔥🔥🔥 GET TOP THREE FUNCTION HERE TO PULL TOP THREE FROM DB AND SEND IT TO ENDPOINT LOOOKKIHERE SIERRA
   getTopThree: (req, res) => {
     const { id } = req.params;
     const queryString = `
@@ -121,6 +118,44 @@ const dbController = {
       if (err) return res.send(err);
       // console.log(result.rows);
       return res.send(result.rows);
+    });
+  },
+
+  insertEmailInDB: (req, res, next) => {
+    const email  = res.locals.email;
+    const text = `INSERT INTO emails (emaillist) VALUES ($1);`;
+    const values = [email];
+    client.query(text, values, (err, result) => {
+      console.log(result);
+      if (err) console.log(err);
+      next();
+    });
+  },
+
+  submitVote: (req, res) => {
+    const useremail = res.locals.verifiedEmail;
+    const { resourceid, upvote } = req.body;
+    if (upvote === true) {
+      const queryString = `SELECT link FROM resources WHERE resourceid = ${resourceid};`;
+      client.query(queryString, (err, result) => {
+        let gotResource = result.rows[0].link;
+        const selectedID = `SELECT emailid FROM emails WHERE emaillist = '${useremail}';`;
+        client.query(selectedID, (err, result) => {
+        let gotID = result.rows[0].emailid;
+        const text2 = 'INSERT INTO favorites (emailid, links) VALUES ($1, $2);';
+        const values1 = [gotID, gotResource];
+        client.query(text2, values1, (err, result) => {
+          console.log(result);
+        });  
+        });
+      });
+    }
+    const text = 'INSERT INTO votes (resourceid, useremail, upvote) VALUES ($1, $2, $3) ON CONFLICT (resourceid, useremail) DO UPDATE  SET upvote = $3 RETURNING *';
+    const values = [resourceid, useremail, upvote];
+    client.query(text, values, (err, result) => {
+      if (err) return res.send(err);
+      console.log(result.rows);
+      res.send(result.rows);
     });
   },
     // for (let i = 0; i < 120; i += 1) {

@@ -3,6 +3,7 @@ const conString = require('./server_settings/elephantLogin.js');
 
 const pool = new Pool({
   connectionString: conString,
+  max:20,
   idleTimeoutMillis: 30000,// the amount of time that will pass before the client will spend to try to make a connection
   connectionTimeoutMillis: 2000, // This is the time limit for connecting to the db. If it takes too long the connection will fail
 });
