@@ -12,6 +12,8 @@ const {
   submitResource,
   getTopThree,
   insertEmailInDB,
+  submitEmail,
+  sendEmail
 } = require('./dbController.js');
 const { getoAuthCode, getAccessToken, getAPI, jwtCookie } = require('./oAuthController');
 const pool = require('./database.js');
@@ -41,19 +43,6 @@ app.use(
   }),
 );
 
-
-
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-const msg = {
-  to: 'sierra.swaby@gmail.com',
-  from: 'sierra.swaby@gmail.com',
-  subject: 'Sending with Twilio SendGrid is Fun',
-  text: 'and easy to do anywhere, even with Node.js',
-  html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-};
-sgMail.send(msg);
-
 // app.get('/api/resources/:id', getData);
 
 app.get('/api/category', getCategory);
@@ -70,6 +59,8 @@ app.get('/api/login', getoAuthCode, getAccessToken, getAPI, insertEmailInDB, jwt
 
 app.get('/api/fakeData', fakeData);
 // app.get('/api/favorites', 'push resource into array');
+
+app.get('/api/newsEmail/:email', submitEmail, sendEmail);
 
 
 app.use('/dist', express.static('dist'));

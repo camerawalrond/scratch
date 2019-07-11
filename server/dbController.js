@@ -27,7 +27,7 @@ const dbController = {
     });
   },
   getCategory: (req, res) => {
-    const queryIdString = 'SELECT * FROM categories';
+    const queryIdString = 'SELECT * FROM heelycategories';
     client.query(queryIdString, (err, result) => {
       if (err) return res.send(err);
       res.send(result.rows);
@@ -57,6 +57,30 @@ const dbController = {
       if (err) console.log('Error ', err);
       res.status(200).send(result.rows);
     });
+  },
+
+  submitEmail: (req, res, next) => {
+    const {email} = req.params;
+    const text = 'INSERT INTO newsletteremails (emails) VALUES ($1);';
+    const values = [email];
+    client.query(text, values, (err, result) => {
+      if (err) console.log(err);
+    })
+    next();
+  },
+
+  sendEmail: (req, res) => {
+    const {email} = req.params;
+    const sgMail = require('@sendgrid/mail');
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const msg = {
+      to: email,
+      from: 'sierra.swaby@gmail.com',
+      subject: 'The Resource Stack Newsletter Confirmation',
+      text: "Welcome to the Resource Stack community! Thanks for signing up for our newsletters. Keep an eye on your inbox for more updates.",
+      html: "Welcome to the Resource Stack community! Thanks for signing up for our newsletters. Keep an eye on your inbox for more updates.",
+    };
+    sgMail.send(msg);
   },
 
 
